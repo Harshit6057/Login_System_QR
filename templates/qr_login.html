@@ -1,15 +1,82 @@
-<h2>QR Login</h2>
-<img src="/static/qr.png" width="200" />
-<p>Scan QR with logged-in device</p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Login | PulseID</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth.css') }}"
+    />
+  </head>
+  <body class="theme-genz">
+    <div class="noise-overlay" aria-hidden="true"></div>
+    <div class="auth-shell">
+      <section class="hero-panel">
+        <span class="hero-pill">
+          <span>📡</span>
+          Sync & Approve
+        </span>
+        <h1>Hold your phone up. You’re in.</h1>
+        <p>
+          Scan this one-time QR with any trusted device signed into the PulseID
+          mobile app. Approvals expire in 60 seconds to keep things tight.
+        </p>
+        <div class="hero-metrics">
+          <div class="metric-chip">
+            <strong>1 Scan</strong>
+            <span>Unlimited sessions</span>
+          </div>
+          <div class="metric-chip">
+            <strong>Bank-grade</strong>
+            <span>Encrypted tokens</span>
+          </div>
+        </div>
+      </section>
 
-<script>
-  setInterval(() => {
-    fetch(`/check-qr/{{token}}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          window.location = "/dashboard";
-        }
-      });
-  }, 2000);
-</script>
+      <section class="form-panel">
+        <div class="glass-card qr-card">
+          <h2 class="card-headline">Scan to continue</h2>
+          <p class="card-subtext">
+            Keep this tab open. We’ll auto-redirect once the scan is approved.
+          </p>
+          <img src="{{ url_for('static', filename='qr.png') }}" alt="QR code" />
+          <p class="qr-status">
+            Status:
+            <span id="qrStatus">Waiting for approval…</span>
+          </p>
+          <div class="alt-login-card">
+            <p>Prefer typing?</p>
+            <a class="secondary-btn" href="/login">Use password login</a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const statusEl = document.getElementById("qrStatus");
+      const poll = () => {
+        fetch(`/check-qr/{{token}}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "success") {
+              statusEl.textContent = "Approved. Redirecting…";
+              window.location = "/dashboard";
+            } else if (data.status === "expired") {
+              statusEl.textContent = "Code expired. Refresh for new QR.";
+            }
+          })
+          .catch(() => {
+            statusEl.textContent = "Connection lost. Retrying…";
+          });
+      };
+      setInterval(poll, 2000);
+    </script>
+  </body>
+</html>

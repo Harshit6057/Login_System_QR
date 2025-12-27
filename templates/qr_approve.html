@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register | PulseID</title>
+    <title>Approve QR | PulseID</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,31 +20,35 @@
     <div class="auth-shell">
       <section class="hero-panel">
         <span class="hero-pill">
-          <span>🌀</span>
-          Future-ready Identity
+          <span>📱</span>
+          Mobile approval
         </span>
-        <h1>Create your PulseID in minutes.</h1>
+        <h1>Approve the login on your phone.</h1>
         <p>
-          One username powers password login, QR approvals, and faster access
-          across every device you sync.
+          Enter the same credentials you registered with to confirm this QR scan.
+          Once verified, the desktop automatically unlocks.
         </p>
         <div class="hero-metrics">
           <div class="metric-chip">
-            <strong>42s</strong>
-            <span>Avg. setup time</span>
+            <strong>Secure</strong>
+            <span>Stored in SQLite with SHA-256 hash</span>
           </div>
           <div class="metric-chip">
-            <strong>99.99%</strong>
-            <span>Uptime for QR auth</span>
+            <strong>60s</strong>
+            <span>QR validity window</span>
           </div>
         </div>
       </section>
 
       <section class="form-panel">
         <div class="glass-card">
-          <h2 class="card-headline">Let’s get you in</h2>
+          {% if approved %}
+          <h2 class="card-headline">Approved 🎉</h2>
+          <p class="card-subtext">Head back to the desktop tab — you’re in.</p>
+          {% else %}
+          <h2 class="card-headline">Confirm your identity</h2>
           <p class="card-subtext">
-            Choose a unique username & a strong password. You can QR-login later.
+            This ensures only registered users can approve the scan.
           </p>
           <form method="post" autocomplete="off" novalidate>
             <div class="form-group">
@@ -53,7 +57,7 @@
                 id="username"
                 name="username"
                 type="text"
-                placeholder="eg. luna.codes"
+                placeholder="eg. neon.nova"
                 required
               />
             </div>
@@ -63,16 +67,20 @@
                 id="password"
                 name="password"
                 type="password"
-                placeholder="8+ characters, keep it secret"
+                placeholder="••••••••"
                 required
               />
             </div>
-            <button class="primary-btn" type="submit">Create account</button>
+            {% if error %}
+            <p style="color: #ff8db1; margin-bottom: 1rem;">{{ error }}</p>
+            {% endif %}
+            <button class="primary-btn" type="submit">Approve login</button>
           </form>
+          {% endif %}
 
           <div class="form-footer">
-            Already vibing with PulseID?
-            <a href="/login">Jump to login</a>
+            QR expired?
+            <a href="/qr_login">Generate a fresh code</a>
           </div>
         </div>
       </section>

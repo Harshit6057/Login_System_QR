@@ -1,14 +1,91 @@
-<h2>Login</h2>
-<form method="post">
-  <input name="username" placeholder="Username" required /><br />
-  <input
-    name="password"
-    type="password"
-    placeholder="Password"
-    required
-  /><br />
-  <button>Login</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | PulseID</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth.css') }}"
+    />
+  </head>
+  <body class="theme-genz">
+    <div class="noise-overlay" aria-hidden="true"></div>
+    <div class="auth-shell">
+      <section class="hero-panel">
+        <span class="hero-pill">
+          <span>⚡</span>
+          Seamless Access
+        </span>
+        <h1>Log in like it’s already 2030.</h1>
+        <p>
+          Choose your vibe: classic username/password or a frictionless QR scan.
+          All roads lead to your personalized dashboard.
+        </p>
+        <div class="hero-metrics">
+          <div class="metric-chip">
+            <strong>0.8s</strong>
+            <span>Avg QR approval</span>
+          </div>
+          <div class="metric-chip">
+            <strong>+12K</strong>
+            <span>Gen Z logins weekly</span>
+          </div>
+        </div>
+      </section>
 
-<br />
-<a href="/qr_login">Login with QR</a>
+      <section class="form-panel">
+        <div class="glass-card">
+          <div class="tab-toggle">
+            <span class="active">Password Login</span>
+            <a href="/qr_login">Use QR Scan</a>
+          </div>
+          <h2 class="card-headline">Welcome back</h2>
+          <p class="card-subtext">
+            Enter your credentials to unlock the dashboard.
+          </p>
+          <form method="post" autocomplete="off" novalidate>
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="eg. neon.nova"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <button class="primary-btn" type="submit">Login now</button>
+          </form>
+
+          <div class="form-footer">
+            No account?
+            <a href="/register">Create one in 40 seconds</a>
+          </div>
+
+          <div class="alt-login-card">
+            <h3>Need QR login?</h3>
+            <p>Scan from your synced mobile app for instant entry.</p>
+            <a class="secondary-btn" href="/qr_login">Launch QR Login</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

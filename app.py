@@ -82,7 +82,7 @@ def qr_login():
     img = qrcode.make(qr_url)
     img.save("static/qr.png")
 
-    return render_template("qr_login.html")
+    return render_template("qr_login.html", token=token)
 
 
 
@@ -115,7 +115,7 @@ def check_qr(token):
   
   
 
-@app.route("/qr-auth/<token>")
+@app.route("/qr-auth/<token>", methods=["GET", "POST"])
 def qr_auth(token):
     if token not in QR_TOKENS:
         return "Invalid or expired QR", 400
@@ -123,15 +123,30 @@ def qr_auth(token):
     username, expiry = QR_TOKENS[token]
 
     if time.time() > expiry:
+        del QR_TOKENS[token]
         return "QR expired", 400
 
-    # Simulate login approval
-    # In real apps, user confirms on mobile
-    session["user"] = "testuser"  # or actual user
-    del QR_TOKENS[token]
+    error = None
+    approved = False
 
-    return redirect("/dashboard")
+    if request.method == "POST":
+        form_username = request.form["username"]
+        form_password = hash_password(request.form["password"])
 
+        cur = get_db().execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (form_username, form_password),
+        )
+
+        if cur.fetchone():
+            QR_TOKENS[token] = (form_username, expiry)
+            approved = True
+        else:
+            error = "Invalid username or password"
+
+    return render_template(
+        "qr_approve.html", token=token, error=error, approved=approved
+    )
 
 
   
